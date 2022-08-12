@@ -1,7 +1,5 @@
 package twim.netty.client;
 
-import twim.netty.client.NettySocketClient;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

@@ -5,6 +5,8 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.Delimiters;
 
 public class NettySocketServer {
     private int port;
@@ -21,7 +23,7 @@ public class NettySocketServer {
         // workerGroup은 worker쓰레드가 10개라면 100명의 클라이언트가 동시 접속 했을 때
         // worker스레드 하나당 10명의 클라이언트를 처리합니다.
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        EventLoopGroup workerGroup = new NioEventLoopGroup(4);
 
 
 
@@ -66,7 +68,7 @@ public class NettySocketServer {
         // 핸들러를 파이프라인에 추가했습니다.
 
         bootstrap_childHandler
-                .option(ChannelOption.SO_BACKLOG, 128)
+                .option(ChannelOption.SO_BACKLOG, 4)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
         // option() 메서드는 서버 소켓의 옵션을 설정할 수 있고,
         // childOption() 메서드는 서버에 접속한 클라이언트 소켓에 대한 옵션을 설정합니다.
@@ -78,6 +80,7 @@ public class NettySocketServer {
             // 서버를 비동기 식으로 바인딩 한다. sync() 는 바인딩이 완료되기를 대기한다.
             // ChannelFuture 는 작업이 완료되면 그 결과에 접근 할 수 있게 해주는
             // 자리 표시자 역활을 하는 인터페이스이다.
+            // 아래 코드는 부트스트랩 시동장치에 포트번호를 부여한다고 이해하였습니다.
             ChannelFuture f = bootstrap.bind(port).sync();
 
             // 채널의 CloseFuture를 얻고 완료 될때 까지 현재 스레드를 블로킹한다.
