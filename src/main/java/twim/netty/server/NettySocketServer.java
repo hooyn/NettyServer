@@ -7,6 +7,9 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 
 public class NettySocketServer {
     private int port;
@@ -23,7 +26,7 @@ public class NettySocketServer {
         // workerGroup은 worker쓰레드가 10개라면 100명의 클라이언트가 동시 접속 했을 때
         // worker스레드 하나당 10명의 클라이언트를 처리합니다.
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workerGroup = new NioEventLoopGroup(4);
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
 
 
 
@@ -68,7 +71,7 @@ public class NettySocketServer {
         // 핸들러를 파이프라인에 추가했습니다.
 
         bootstrap_childHandler
-                .option(ChannelOption.SO_BACKLOG, 4)
+                .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
         // option() 메서드는 서버 소켓의 옵션을 설정할 수 있고,
         // childOption() 메서드는 서버에 접속한 클라이언트 소켓에 대한 옵션을 설정합니다.
