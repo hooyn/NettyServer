@@ -17,9 +17,9 @@ public class NettySocketServerHandler extends ChannelInboundHandlerAdapter {
         ByteBuf in = (ByteBuf) msg;
         String result = in.toString(CharsetUtil.UTF_8);
 
-        System.out.println(result);
+        System.out.println("DATA: " + result);
         ctx.write(in);
-
+        ctx.close();
 /*
         StringTokenizer st = new StringTokenizer(result, "}");
         int count = st.countTokens();
