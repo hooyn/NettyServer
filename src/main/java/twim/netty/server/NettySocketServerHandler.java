@@ -27,6 +27,9 @@ public class NettySocketServerHandler extends ChannelInboundHandlerAdapter {
         message += (String) msg;
     }
 
+    //데이터 다음으로 넘어가서 출력되는 문제 해결 참고
+    //https://groups.google.com/g/netty-ko/c/IcRU-Qoaw7w
+
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception{
         // 모든 데이터를 읽었을 때 message를 파싱하여 데이터를 빼냅니다.
