@@ -26,7 +26,7 @@ public class NettySocketServer {
         // boss 스레드는 클라이언트의 연결을 수락하는 부모 스레드 -> 매개변수로 지정한 스레드 개수에 맞춰서 일 처리
         // workerGroup은 worker쓰레드가 10개라면 100명의 클라이언트가 동시 접속 했을 때
         // worker스레드 하나당 10명의 클라이언트를 처리합니다.
-        EventLoopGroup bossGroup = new NioEventLoopGroup(2);
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
 
