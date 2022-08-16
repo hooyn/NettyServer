@@ -1,10 +1,16 @@
 package twim.netty.server;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
+
+import java.util.List;
 
 public class NettySocketServer {
     private int port;
@@ -58,7 +64,14 @@ public class NettySocketServer {
             @Override
             protected void initChannel(SocketChannel ch) throws Exception {
                 ChannelPipeline pipeline = ch.pipeline();
-                //pipeline.addLast("frameDecoder", new LineBasedFrameDecoder(80));
+                pipeline.addLast(new ByteToMessageDecoder() {
+                    @Override
+                    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+                        out.add(in.readBytes(in.readableBytes()));
+                    }
+                });
+                pipeline.addLast(new StringEncoder());
+                pipeline.addLast(new StringDecoder());
                 pipeline.addLast(new NettySocketServerHandler());
             }
         });
