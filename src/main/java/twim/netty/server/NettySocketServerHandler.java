@@ -6,10 +6,12 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.CharsetUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 
 import java.util.StringTokenizer;
 
+@Slf4j
 @ChannelHandler.Sharable //안전하게 데이터를 처리하도록 하는 어노테이션
 public class NettySocketServerHandler extends ChannelInboundHandlerAdapter {
 
