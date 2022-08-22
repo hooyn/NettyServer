@@ -64,12 +64,7 @@ public class NettySocketServer {
             @Override
             protected void initChannel(SocketChannel ch) throws Exception {
                 ChannelPipeline pipeline = ch.pipeline();
-                pipeline.addLast(new ByteToMessageDecoder() {
-                    @Override
-                    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-                        out.add(in.readBytes(in.readableBytes()));
-                    }
-                });
+
                 pipeline.addLast(new StringEncoder());
                 pipeline.addLast(new StringDecoder());
                 pipeline.addLast(new NettySocketServerHandler());
