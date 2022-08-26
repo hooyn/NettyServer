@@ -5,6 +5,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.nio.charset.StandardCharsets;
+
 @Slf4j
 @ChannelHandler.Sharable //안전하게 데이터를 처리하도록 하는 어노테이션
 public class NettySocketServerHandler extends ChannelInboundHandlerAdapter {
@@ -20,6 +22,10 @@ public class NettySocketServerHandler extends ChannelInboundHandlerAdapter {
 
         // 들어오는 데이터를 받아서 message에 이어 붙입니다.
         message += (String) msg;
+
+        int len = message.getBytes(StandardCharsets.UTF_8).length;
+        System.out.println(message);
+        System.out.println(len);
     }
 
     //데이터 다음으로 넘어가서 출력되는 문제 해결 참고
@@ -29,6 +35,7 @@ public class NettySocketServerHandler extends ChannelInboundHandlerAdapter {
         // 모든 데이터를 읽었을 때 message를 파싱하여 데이터를 빼냅니다.
 
         int totalLength = message.length();
+        System.out.println("total:" + totalLength);
         int cnt = 0;
         while(cnt<totalLength){
             if(message.equals("SERVER:READY")){

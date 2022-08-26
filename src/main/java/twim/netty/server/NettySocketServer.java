@@ -65,6 +65,7 @@ public class NettySocketServer {
             protected void initChannel(SocketChannel ch) throws Exception {
                 ChannelPipeline pipeline = ch.pipeline();
 
+                ch.config().setRecvByteBufAllocator(new FixedRecvByteBufAllocator(30));
                 pipeline.addLast(new StringEncoder());
                 pipeline.addLast(new StringDecoder());
                 pipeline.addLast(new NettySocketServerHandler());
@@ -76,6 +77,7 @@ public class NettySocketServer {
 
         bootstrap_childHandler
                 .option(ChannelOption.SO_BACKLOG, 128)
+                .childOption(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(30))
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
         // option() 메서드는 서버 소켓의 옵션을 설정할 수 있고,
         // childOption() 메서드는 서버에 접속한 클라이언트 소켓에 대한 옵션을 설정합니다.
