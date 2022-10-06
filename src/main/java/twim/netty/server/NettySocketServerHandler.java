@@ -22,39 +22,46 @@ public class NettySocketServerHandler extends ChannelInboundHandlerAdapter {
 
         // 들어오는 데이터를 받아서 message에 이어 붙입니다.
         message += (String) msg;
-
-        int len = message.getBytes(StandardCharsets.UTF_8).length;
-        System.out.println(message);
-        System.out.println(len);
+        int msgLength = Integer.parseInt(message.substring(2, 4));
+        if(message.length()>=msgLength){
+            while(message.length()>=msgLength){
+                log.warn(message.substring(4, msgLength));
+                message = message.substring(msgLength);
+            }
+        }
     }
 
     //데이터 다음으로 넘어가서 출력되는 문제 해결 참고
     //https://groups.google.com/g/netty-ko/c/IcRU-Qoaw7w
 
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception{
-        // 모든 데이터를 읽었을 때 message를 파싱하여 데이터를 빼냅니다.
+//        모든 데이터를 읽었을 때 message를 파싱하여 데이터를 빼냅니다.
 
-        int totalLength = message.length();
-        System.out.println("total:" + totalLength);
-        int cnt = 0;
-        while(cnt<totalLength){
-            if(message.equals("SERVER:READY")){
-                log.warn("Data: " + message);
-                ctx.writeAndFlush(message);
-                break;
-            }
+//        channelRead에서 받는 방식으로 변경
 
-            int msgLength = Integer.parseInt(message.substring(cnt+2, cnt+4));
-            String data = message.substring(cnt+4, cnt+msgLength);
-            log.warn("Data: " + data);
-            cnt += msgLength;
+//        int totalLength = message.length();
+//        int cnt = 0;
+//        while(cnt<totalLength){
+//            if(message.equals("SERVER:READY")){
+//                log.warn("Data: " + message);
+//                ctx.writeAndFlush(message);
+//                break;
+//            }
+//
+//            int msgLength = Integer.parseInt(message.substring(cnt+2, cnt+4));
+//            System.out.println(msgLength);
+//
+//            String data = message.substring(cnt+4, msgLength);
+//            log.warn("Data: " + data);
+//            cnt += msgLength;
+//
+//            ctx.writeAndFlush(data);
+//        }
+//
+//        log.warn(message)
+//        모든 데이터를 출력한 후 message 초기화 해줍니다.
 
-            ctx.writeAndFlush(data);
-        }
-
-        //ctx.writeAndFlush(message);
-        //모든 데이터를 출력한 후 message 초기화 해줍니다.
-        message = "";
+//        message = "";
     }
 
     @Override
