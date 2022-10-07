@@ -77,7 +77,7 @@ public class NettySocketServer {
 
         bootstrap_childHandler
                 .option(ChannelOption.SO_BACKLOG, 128)
-                .childOption(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(30))
+                .childOption(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(30)) // msg 가 들어올 때 30개씩 들어오도록 설정
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
         // option() 메서드는 서버 소켓의 옵션을 설정할 수 있고,
         // childOption() 메서드는 서버에 접속한 클라이언트 소켓에 대한 옵션을 설정합니다.

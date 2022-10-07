@@ -1,5 +1,6 @@
 package twim.netty.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import twim.netty.server.NettySocketServer;
 
@@ -7,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 @Controller
+@Slf4j
 public class NettyController {
     private NettySocketServer server;
 
@@ -16,7 +18,7 @@ public class NettyController {
             @Override
             public void run() {
                 try{
-                    System.out.println("start socket tcp");
+                    log.info("Start Socket TCP { Port: 5050 }");
                     server = new NettySocketServer(5050);
                     server.run();
                 } catch (Exception e){
@@ -28,6 +30,6 @@ public class NettyController {
 
     @PreDestroy
     private void destroy(){
-        System.out.println("destroy socket");
+        log.info("Destroy Socket TCP { Port: 5050 }");
     }
 }
