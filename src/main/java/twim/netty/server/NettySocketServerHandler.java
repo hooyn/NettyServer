@@ -22,11 +22,17 @@ public class NettySocketServerHandler extends ChannelInboundHandlerAdapter {
 
         // 들어오는 데이터를 받아서 message에 이어 붙입니다.
         message += (String) msg;
-        int msgLength = Integer.parseInt(message.substring(2, 4));
-        if(message.length()>=msgLength){
-            while(message.length()>=msgLength){
-                log.warn(message.substring(4, msgLength));
-                message = message.substring(msgLength);
+        if(message.length()>4){
+            int msgLength = Integer.parseInt(message.substring(2, 4));
+
+            if(message.length()>=msgLength){
+                while(message.length()>=msgLength){
+                    log.warn(message.substring(4, msgLength));
+                    message = message.substring(msgLength);
+
+                    if(msgLength==0 || message.length()==0) break;
+                    msgLength = Integer.parseInt(message.substring(2, 4));
+                }
             }
         }
     }
