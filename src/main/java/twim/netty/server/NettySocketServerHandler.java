@@ -13,12 +13,14 @@ public class NettySocketServerHandler extends ChannelInboundHandlerAdapter {
 
     private String message = "";
 
+    /**
+     * ByteBuf: 사용자 정의 버퍼 형식으로 확장할 수 있습니다.
+     * 순차적인 두가지 포인트 변수를 제공하여 읽기 쓰기 전환 없이 사용가능합니다.
+     * ChannelHandlerContext 는 다음 ChannelHandler 에게 이벤트를 넘기거나
+     * 동적으로 ChannelPipeline 을 변경할 수 있습니다.
+     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg){
-        // ByteBuf: 사용자 정의 버퍼 형식으로 확장할 수 있습니다.
-        // 순차적인 두가지 포인트 변수를 제공하여 읽기 쓰기 전환 없이 사용가능합니다.
-        // ChannelHandlerContext 는 다음 ChannelHandler 에게 이벤트를 넘기거나
-        // 동적으로 ChannelPipeline 을 변경할 수 있습니다.
 
         // 들어오는 데이터를 받아서 message 에 이어 붙입니다.
         message += (String) msg;
