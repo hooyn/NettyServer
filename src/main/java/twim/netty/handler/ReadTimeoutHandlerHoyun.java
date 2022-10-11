@@ -149,8 +149,9 @@ public class ReadTimeoutHandlerHoyun extends ChannelInboundHandlerAdapter {
         if (!closed) {
             log.error("********** TIME OUT: " + Thread.currentThread().getId() + " **********");
             NettySocketServerHandler.banList.add(Thread.currentThread().getId());
-            //ctx.fireExceptionCaught(ReadTimeoutException.INSTANCE);
-            //ctx.fireChannelRead("0011{\"BAN\"}");
+
+            //ctx.fireExceptionCaught(ReadTimeoutException.INSTANCE); -> 새로운 쓰레드를 생성하는 것을 막기 위해 주석처리
+            //ctx.fireChannelRead(""); -> Main 으로 메세지 보내기 가능
         }
     }
 

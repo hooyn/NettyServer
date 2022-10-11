@@ -28,39 +28,43 @@ public class NettySocketServerHandler extends ChannelInboundHandlerAdapter {
 
         // 들어오는 데이터를 받아서 message 에 이어 붙입니다.
         message += data;
-        parsingData();
+        printMessage();
     }
 
-    private void parsingData() {
+    private void printMessage() {
+        try{
+            // message 의 길이가 4개 이상 즉, 데이터의 길이를 얻어올 수 있다면 진행
+            if(message.length()>4){
 
-        // message 의 길이가 4개 이상 즉, 데이터의 길이를 얻어올 수 있다면 진행
-        if(message.length()>4){
+                // 데이터의 길이를 가져와서 msgLength 에 저장
+                int msgLength = Integer.parseInt(message.substring(2, 4));
 
-            // 데이터의 길이를 가져와서 msgLength 에 저장
-            int msgLength = Integer.parseInt(message.substring(2, 4));
+                if(message.length()>=msgLength){
 
-            if(message.length()>=msgLength){
+                    // 데이터의 길이가 된다면 message 에 있는 데이터 모두 출력
+                    while(message.length()>=msgLength){
 
-                // 데이터의 길이가 된다면 message 에 있는 데이터 모두 출력
-                while(message.length()>=msgLength){
+                        // message 를 출력
+                        String output = message.substring(4, msgLength);
 
-                    // message 를 출력
-                    String output = message.substring(4, msgLength);
+                        if(!banList.contains(Thread.currentThread().getId()))
+                            log.info(output + " " + Thread.currentThread().getId());
 
-                    if(!banList.contains(Thread.currentThread().getId()))
-                        log.warn(output + " " + Thread.currentThread().getId());
+                        // 출력 데이터 제거
+                        message = message.substring(msgLength);
 
-                    // 출력 데이터 제거
-                    message = message.substring(msgLength);
+                        // message 가 없거나, message 길이가 작아서 데이터의 길이를 얻지 못할 경우 break
+                        if(message.length() == 0 || message.length() < 4)
+                            break;
 
-                    // message 가 없거나, message 길이가 작아서 데이터의 길이를 얻지 못할 경우 break
-                    if(message.length() == 0 || message.length() < 4)
-                        break;
-
-                    // message 를 통해 데이터 길이를 측정할 수 있다면 측정
-                    msgLength = Integer.parseInt(message.substring(2, 4));
+                        // message 를 통해 데이터 길이를 측정할 수 있다면 측정
+                        msgLength = Integer.parseInt(message.substring(2, 4));
+                    }
                 }
             }
+        } catch (NumberFormatException e){
+            log.error("올바른 데이터를 입력해주세요.");
+            message = "";
         }
     }
 
