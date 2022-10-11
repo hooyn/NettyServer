@@ -1,5 +1,6 @@
 package twim.netty.controller;
 
+import io.netty.handler.timeout.ReadTimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import twim.netty.server.NettySocketServer;

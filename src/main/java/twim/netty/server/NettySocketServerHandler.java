@@ -5,13 +5,15 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @ChannelHandler.Sharable //안전하게 데이터를 처리하도록 하는 어노테이션
 public class NettySocketServerHandler extends ChannelInboundHandlerAdapter {
 
     private String message = "";
+    public static List<Long> banList = new ArrayList<Long>();
 
     /**
      * ByteBuf: 사용자 정의 버퍼 형식으로 확장할 수 있습니다.
@@ -22,8 +24,14 @@ public class NettySocketServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg){
 
+        String data = (String) msg;
+
         // 들어오는 데이터를 받아서 message 에 이어 붙입니다.
-        message += (String) msg;
+        message += data;
+        parsingData();
+    }
+
+    private void parsingData() {
 
         // message 의 길이가 4개 이상 즉, 데이터의 길이를 얻어올 수 있다면 진행
         if(message.length()>4){
@@ -36,8 +44,13 @@ public class NettySocketServerHandler extends ChannelInboundHandlerAdapter {
                 // 데이터의 길이가 된다면 message 에 있는 데이터 모두 출력
                 while(message.length()>=msgLength){
 
-                    // message 를 출력하고, 출력한 message 제거
-                    log.warn(message.substring(4, msgLength));
+                    // message 를 출력
+                    String output = message.substring(4, msgLength);
+
+                    if(!banList.contains(Thread.currentThread().getId()))
+                        log.warn(output + " " + Thread.currentThread().getId());
+
+                    // 출력 데이터 제거
                     message = message.substring(msgLength);
 
                     // message 가 없거나, message 길이가 작아서 데이터의 길이를 얻지 못할 경우 break

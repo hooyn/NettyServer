@@ -7,6 +7,10 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.timeout.ReadTimeoutException;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.TimeoutException;
+import twim.netty.handler.ReadTimeoutHandlerHoyun;
 
 public class NettySocketServer {
     private int port;
@@ -59,16 +63,17 @@ public class NettySocketServer {
          */
         ServerBootstrap channel = group.channel(NioServerSocketChannel.class);
 
-
         ServerBootstrap bootstrap_childHandler = channel.childHandler(new ChannelInitializer<SocketChannel>() {
             @Override
             protected void initChannel(SocketChannel ch) throws Exception {
                 ChannelPipeline pipeline = ch.pipeline();
 
-                ch.config().setRecvByteBufAllocator(new FixedRecvByteBufAllocator(30));
+                ch.config().setRecvByteBufAllocator(new FixedRecvByteBufAllocator(30)); // msg 가 들어올 때 30개씩 들어오도록 설정
+                pipeline.addLast(new ReadTimeoutHandlerHoyun(3));
                 pipeline.addLast(new StringEncoder());
                 pipeline.addLast(new StringDecoder());
                 pipeline.addLast(new NettySocketServerHandler());
+
             }
         });
 
@@ -83,12 +88,10 @@ public class NettySocketServer {
          * SO_BACKLOG : 동시에 수용 가능한 소켓 연결 요청수
          */
 
-
         bootstrap_childHandler
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(30)) // msg 가 들어올 때 30개씩 들어오도록 설정
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
-
 
         try{
             /**
